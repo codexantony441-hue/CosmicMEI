@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CosmicMEI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-light: #a29bfe;
+            --primary-dark: #5c4cd9;
+            --secondary: #00b894;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --sidebar-bg: #0f0f1a;
+            --card-bg: #1a1a2e;
+            --text-light: #e2e8f0;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #e17055;
+            --info: #74b9ff;
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--darker); color: var(--text-light); display: flex; min-height: 100vh; line-height: 1.6; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); padding: 24px 0; position: fixed; height: 100vh; left: 0; top: 0; z-index: 100; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); transition: transform 0.3s ease; overflow-y: auto; }
+        .sidebar-logo { padding: 0 24px 24px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; }
+        .sidebar-logo h2 { font-family: var(--font-heading); font-size: 24px; color: white; display: flex; align-items: center; gap: 10px; }
+        .sidebar-logo h2 i { color: var(--primary-light); }
+        .sidebar-nav { list-style: none; padding: 0 12px; flex: 1; }
+        .sidebar-nav li { margin-bottom: 4px; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--text-muted); text-decoration: none; border-radius: 10px; transition: all 0.3s ease; font-size: 14px; font-weight: 500; cursor: pointer; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(108, 92, 231, 0.15); color: var(--primary-light); }
+        .sidebar-nav a i { width: 20px; text-align: center; }
+        .sidebar-footer { padding: 24px; border-top: 1px solid var(--border-color); margin-top: auto; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; flex-shrink: 0; }
+        .user-details h4 { font-size: 14px; color: white; margin-bottom: 2px; }
+        .user-details span { font-size: 12px; color: var(--text-muted); }
+        .main-content { margin-left: 260px; flex: 1; padding: 24px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .top-bar h1 { font-family: var(--font-heading); font-size: 28px; color: white; }
+        .top-bar-actions { display: flex; gap: 12px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3); }
+        .btn-outline { background: transparent; color: var(--primary-light); border: 1px solid var(--primary); }
+        .btn-outline:hover { background: rgba(108, 92, 231, 0.1); }
+        .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
+        .btn-secondary { background: var(--darker); color: var(--text-muted); border: 1px solid var(--border-color); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.3); }
+        .stat-card .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+        .icon-purple { background: rgba(108, 92, 231, 0.2); color: var(--primary-light); }
+        .icon-green { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .icon-orange { background: rgba(225, 112, 85, 0.2); color: var(--danger); }
+        .icon-blue { background: rgba(116, 185, 255, 0.2); color: var(--info); }
+        .stat-card h3 { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-card .value { font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: white; margin-bottom: 4px; }
+        .stat-card .subtitle { font-size: 12px; color: var(--text-muted); }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 32px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+        .card:last-child { margin-bottom: 0; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+        .card-header h2 { font-family: var(--font-heading); font-size: 18px; color: white; }
+        .card-header .badge { background: rgba(108, 92, 231, 0.2); color: var(--primary-light); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .quick-action { background: var(--darker); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: var(--text-light); }
+        .quick-action:hover { border-color: var(--primary); background: rgba(108, 92, 231, 0.05); transform: translateY(-2px); }
+        .quick-action i { font-size: 28px; margin-bottom: 8px; color: var(--primary-light); display: block; }
+        .quick-action span { display: block; font-size: 13px; font-weight: 500; }
+        .notification-list { list-style: none; }
+        .notification-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+        .dot-success { background: var(--success); }
+        .dot-warning { background: var(--warning); }
+        .dot-info { background: var(--info); }
+        .notification-text h4 { font-size: 14px; color: white; margin-bottom: 2px; }
+        .notification-text p { font-size: 12px; color: var(--text-muted); }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid rgba(45, 55, 72, 0.5); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .status-paid { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .status-pending { background: rgba(253, 203, 110, 0.2); color: var(--warning); }
+        .status-overdue { background: rgba(225, 112, 85, 0.2); color: var(--danger); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 32px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .modal h2 { font-family: var(--font-heading); color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+        .modal h2 i { color: var(--primary-light); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; background: var(--darker); border: 1px solid var(--border-color); border-radius: 10px; color: white; font-family: var(--font-body); font-size: 14px; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-group select option { background: var(--darker); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 24px; cursor: pointer; margin-right: 16px; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.4; display: block; }
+        .empty-state p { font-size: 15px; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--card-bg); border: 1px solid var(--success); border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; z-index: 999; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; max-width: 340px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { color: var(--success); font-size: 20px; }
+        .toast span { color: white; font-size: 14px; }
+        .toast.error { border-color: var(--danger); }
+        .toast.error i { color: var(--danger); }
+        .search-bar { display: flex; gap: 12px; margin-bottom: 20px; }
+        .search-bar input { flex: 1; padding: 10px 14px; background: var(--darker); border: 1px solid var(--border-color); border-radius: 10px; color: white; font-size: 14px; }
+        .search-bar input:focus { outline: none; border-color: var(--primary); }
+        .relatorio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+        @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .dashboard-grid { grid-template-columns: 1fr; } .relatorio-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main-content { margin-left: 0; } .stats-grid { grid-template-columns: 1fr 1fr; } .form-row { grid-template-columns: 1fr; } .mobile-menu-btn { display: block !important; } }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <h2><i class="fas fa-rocket"></i> CosmicMEI</h2>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li><a href="#" data-section="notas"><i class="fas fa-file-invoice"></i> Notas Fiscais</a></li>
+            <li><a href="#" data-section="das"><i class="fas fa-barcode"></i> DAS / Impostos</a></li>
+            <li><a href="#" data-section="financeiro"><i class="fas fa-chart-line"></i> Financeiro</a></li>
+            <li><a href="#" data-section="clientes"><i class="fas fa-users"></i> Clientes</a></li>
+            <li><a href="#" data-section="relatorios"><i class="fas fa-chart-pie"></i> Relatórios</a></li>
+            <li><a href="#" data-section="declaracao"><i class="fas fa-file-alt"></i> Declaração Anual</a></li>
+            <li><a href="#" data-section="certificado"><i class="fas fa-certificate"></i> Certificado Digital</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="userInitials">CM</div>
+                <div class="user-details">
+                    <h4 id="userName">CosmicMEI</h4>
+                    <span id="userCnpj">Plano Pro</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+        <div class="top-bar">
+            <div style="display: flex; align-items: center;">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="top-bar-actions">
+                <button class="btn btn-outline btn-sm" onclick="window.location.href='index.html'">
+                    <i class="fas fa-home"></i> Início
+                </button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="dashboardSection">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon icon-purple"><i class="fas fa-file-invoice"></i></div>
+                    <h3>Notas Emitidas (Mês)</h3>
+                    <div class="value" id="statNotasMes">0</div>
+                    <div class="subtitle">Plano Pro — Ilimitado</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon icon-green"><i class="fas fa-money-bill-wave"></i></div>
+                    <h3>Faturamento Mensal</h3>
+                    <div class="value" id="statFaturamento">R$ 0,00</div>
+                    <div class="subtitle">Limite anual: R$ 81.000,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon icon-orange"><i class="fas fa-barcode"></i></div>
+                    <h3>Próximo DAS</h3>
+                    <div class="value" id="statDAS">R$ 71,60</div>
+                    <div class="subtitle" id="statDASVenc">Vencimento: 20/06/2026</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon icon-blue"><i class="fas fa-users"></i></div>
+                    <h3>Total de Clientes</h3>
+                    <div class="value" id="statClientes">0</div>
+                    <div class="subtitle">Cadastrados na plataforma</div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Ações Rápidas</h2>
+                        <span class="badge">Atalhos</span>
+                    </div>
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="openNovaNotaModal()">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Emitir Nota Fiscal</span>
+                        </div>
+                        <div class="quick-action" onclick="switchSection('das')">
+                            <i class="fas fa-barcode"></i>
+                            <span>Gerar DAS</span>
+                        </div>
+                        <div class="quick-action" onclick="abrirModalCliente()">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Novo Cliente</span>
+                        </div>
+                        <div class="quick-action" onclick="switchSection('relatorios')">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Ver Relatórios</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Notificações</h2>
+                        <span class="badge" id="notifBadge">0 novas</span>
+                    </div>
+                    <ul class="notification-list" id="notifList">
+                        <li class="notification-item">
+                            <div class="notification-dot dot-warning"></div>
+                            <div class="notification-text">
+                                <h4>DAS vence em 5 dias</h4>
+                                <p>Guia de junho/2026 — R$ 71,60</p>
+                            </div>
+                        </li>
+                        <li class="notification-item">
+                            <div class="notification-dot dot-info"></div>
+                            <div class="notification-text">
+                                <h4>Bem-vindo ao CosmicMEI!</h4>
+                                <p>Comece adicionando seus clientes e emitindo notas.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Últimas Notas Fiscais</h2>
+                    <button class="btn btn-outline btn-sm" onclick="switchSection('notas')">Ver Todas</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nº NFS-e</th>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashNotasBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTAS FISCAIS -->
+        <div class="section" id="notasSection">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-file-invoice" style="color:var(--primary-light)"></i> Notas Fiscais Emitidas</h2>
+                    <button class="btn btn-primary" onclick="openNovaNotaModal()">
+                        <i class="fas fa-plus"></i> Nova NFS-e
+                    </button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="searchNotas" placeholder="🔍 Buscar por cliente ou serviço..." oninput="renderNotas()">
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nº NFS-e</th>
+                                <th>Cliente</th>
+                                <th>CNPJ/CPF</th>
+                                <th>Serviço</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notasTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAS -->
+        <div class="section" id="dasSection">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-barcode" style="color:var(--primary-light)"></i> DAS — Guias de Pagamento</h2>
+                    <button class="btn btn-primary" onclick="gerarNovoDAS()">
+                        <i class="fas fa-calculator"></i> Calcular e Gerar DAS
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mês Referência</th>
+                                <th>Valor</th>
+                                <th>Vencimento</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dasTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINANCEIRO -->
+        <div class="section" id="financeiroSection">
+            <div class="stats-grid" id="finStats" style="margin-bottom:24px"></div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Fluxo de Caixa</h2>
+                    <button class="btn btn-primary btn-sm" onclick="abrirModalDespesa()">
+                        <i class="fas fa-plus"></i> Lançar Despesa
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="fluxoBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="section" id="clientesSection">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users" style="color:var(--primary-light)"></i> Agenda e Clientes</h2>
+                    <button class="btn btn-primary" onclick="abrirModalCliente()">
+                        <i class="fas fa-plus"></i> Novo Cliente
+                    </button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="searchClientes" placeholder="🔍 Buscar por nome, CPF/CNPJ ou e-mail..." oninput="renderClientes()">
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Nome</th><th>CPF/CNPJ</th><th>Telefone</th><th>E-mail</th><th>Cadastro</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="clientesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- RELATÓRIOS -->
+        <div class="section" id="relatoriosSection">
+            <div class="relatorio-grid" id="relatorioCards"></div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-bar" style="color:var(--primary-light)"></i> Notas por Mês</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Mês</th><th>Qtd Notas</th><th>Faturamento</th></tr></thead>
+                        <tbody id="relMesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card" style="margin-top:24px">
+                <div class="card-header">
+                    <h2><i class="fas fa-users" style="color:var(--primary-light)"></i> Top Clientes</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Cliente</th><th>Qtd Notas</th><th>Total Faturado</th></tr></thead>
+                        <tbody id="relClientesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- DECLARAÇÃO -->
+        <div class="section" id="declaracaoSection">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-file-alt" style="color:var(--primary-light)"></i> DASN-SIMEI 2026</h2>
+                    <button class="btn btn-primary" onclick="mostrarToast('Declaração enviada para revisão com sucesso!')">
+                        <i class="fas fa-paper-plane"></i> Revisar e Enviar
+                    </button>
+                </div>
+                <div style="margin-top:20px;padding:20px;background:var(--darker);border-radius:12px;">
+                    <h3 style="color:white;margin-bottom:16px;">Resumo da Declaração</h3>
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Ano-calendário:</strong> 2025</p>
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Faturamento Total (2025):</strong> <span id="declFaturamento">Calculando...</span></p>
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Total de Notas Emitidas:</strong> <span id="declNotas">0</span></p>
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Possui funcionário?</strong> Não</p>
+                    <p style="color:var(--success);margin-top:16px;"><i class="fas fa-check-circle"></i> Dados preenchidos automaticamente com base nas notas emitidas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CERTIFICADO -->
+        <div class="section" id="certificadoSection">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-certificate" style="color:var(--primary-light)"></i> Certificado Digital MEI</h2>
+                    <button class="btn btn-primary" onclick="mostrarToast('Certificado emitido com sucesso! Válido até 2027.')">
+                        <i class="fas fa-download"></i> Emitir / Baixar Certificado
+                    </button>
+                </div>
+                <div style="margin-top:20px;padding:20px;background:var(--darker);border-radius:12px;">
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Status:</strong> <span style="color:var(--success)">Ativo</span></p>
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Emissão:</strong> 01/01/2026</p>
+                    <p style="color:var(--text-muted);margin-bottom:8px;"><strong>Validade:</strong> 31/12/2027</p>
+                    <p style="color:var(--text-muted);"><strong>Finalidade:</strong> Assinatura digital de documentos fiscais</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Nova Nota -->
+    <div class="modal-overlay" id="modalNovaNota">
+        <div class="modal">
+            <h2><i class="fas fa-file-invoice"></i> Emitir Nova NFS-e</h2>
+            <div class="form-group">
+                <label>Cliente</label>
+                <select id="notaCliente" required>
+                    <option value="">Selecione um cliente</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>CNPJ/CPF do Cliente</label>
+                <input type="text" id="notaClienteDoc" placeholder="Preenchido automaticamente" readonly>
+            </div>
+            <div class="form-group">
+                <label>Descrição do Serviço</label>
+                <textarea id="notaServico" rows="3" placeholder="Descreva o serviço prestado..." required></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Valor (R$)</label>
+                    <input type="number" id="notaValor" step="0.01" min="0.01" placeholder="0,00" required>
+                </div>
+                <div class="form-group">
+                    <label>Data de Emissão</label>
+                    <input type="date" id="notaData" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>CNAE Principal</label>
+                <input type="text" value="6201-5/01 — Desenvolvimento de Sistemas" disabled>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharModal('modalNovaNota')">Cancelar</button>
+                <button class="btn btn-success" onclick="emitirNota()"><i class="fas fa-check"></i> Emitir NFS-e</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Novo Cliente -->
+    <div class="modal-overlay" id="modalNovoCliente">
+        <div class="modal">
+            <h2><i class="fas fa-user-plus"></i> Novo Cliente</h2>
+            <div class="form-group">
+                <label>Nome Completo / Razão Social</label>
+                <input type="text" id="clienteNome" placeholder="Ex: João Silva ou Empresa XYZ Ltda" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>CPF / CNPJ</label>
+                    <input type="text" id="clienteDoc" placeholder="000.000.000-00 ou 00.000.000/0001-00" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="clienteTel" placeholder="(11) 99999-9999" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="clienteEmail" placeholder="cliente@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Endereço (opcional)</label>
+                <input type="text" id="clienteEnd" placeholder="Rua, número, cidade">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharModal('modalNovoCliente')">Cancelar</button>
+                <button class="btn btn-primary" onclick="cadastrarCliente()"><i class="fas fa-save"></i> Salvar Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Cliente -->
+    <div class="modal-overlay" id="modalEditarCliente">
+        <div class="modal">
+            <h2><i class="fas fa-user-edit"></i> Editar Cliente</h2>
+            <input type="hidden" id="editClienteId">
+            <div class="form-group">
+                <label>Nome Completo / Razão Social</label>
+                <input type="text" id="editClienteNome" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>CPF / CNPJ</label>
+                    <input type="text" id="editClienteDoc" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="editClienteTel" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="editClienteEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Endereço (opcional)</label>
+                <input type="text" id="editClienteEnd">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharModal('modalEditarCliente')">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarEdicaoCliente()"><i class="fas fa-save"></i> Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Despesa -->
+    <div class="modal-overlay" id="modalDespesa">
+        <div class="modal">
+            <h2><i class="fas fa-minus-circle"></i> Lançar Despesa</h2>
+            <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" id="despDescricao" placeholder="Ex: Material de escritório" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Valor (R$)</label>
+                    <input type="number" id="despValor" step="0.01" min="0.01" placeholder="0,00" required>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="despData" required>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharModal('modalDespesa')">Cancelar</button>
+                <button class="btn btn-danger" onclick="salvarDespesa()"><i class="fas fa-save"></i> Lançar Despesa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Operação realizada!</span>
+    </div>
+
+    <script>
+    // ===================== STORAGE =====================
+    const STORE = {
+        get: (k) => { try { return JSON.parse(localStorage.getItem('cmei_'+k)) || []; } catch(e) { return []; } },
+        set: (k, v) => localStorage.setItem('cmei_'+k, JSON.stringify(v)),
+        getObj: (k, def) => { try { return JSON.parse(localStorage.getItem('cmei_'+k)) || def; } catch(e) { return def; } },
+        setObj: (k, v) => localStorage.setItem('cmei_'+k, JSON.stringify(v))
+    };
+
+    // ===================== INICIALIZAÇÃO DOS DADOS =====================
+    let clientes = STORE.get('clientes');
+    let notas = STORE.get('notas');
+    let despesas = STORE.get('despesas');
+    let dasGuias = STORE.get('das');
+    let notaCounter = STORE.getObj('notaCounter', 1246);
+
+    // DAS padrão se vazio
+    if (dasGuias.length === 0) {
+        dasGuias = [
+            { id: 1, mes: 'Junho/2026', valor: 71.60, vencimento: '20/06/2026', status: 'Pendente' },
+            { id: 2, mes: 'Maio/2026', valor: 71.60, vencimento: '20/05/2026', status: 'Pago' },
+        ];
+        STORE.set('das', dasGuias);
+    }
+
+    // ===================== TOAST =====================
+    function mostrarToast(msg, erro = false) {
+        const t = document.getElementById('toast');
+        const icon = t.querySelector('i');
+        document.getElementById('toastMsg').textContent = msg;
+        t.className = 'toast' + (erro ? ' error' : '');
+        icon.className = erro ? 'fas fa-times-circle' : 'fas fa-check-circle';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ===================== FORMATAÇÃO =====================
+    function fmtMoeda(v) {
+        return 'R$ ' + parseFloat(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function fmtData(d) {
+        if (!d) return '—';
+        const [y, m, day] = d.split('-');
+        return `${day}/${m}/${y}`;
+    }
+    function hoje() {
+        return new Date().toISOString().split('T')[0];
+    }
+    function getMesAno(d) {
+        if (!d) return '';
+        const [y, m] = d.split('-');
+        const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+        return meses[parseInt(m)-1] + '/' + y;
+    }
+
+    // ===================== NAVEGAÇÃO =====================
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const section = this.dataset.section;
+            document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            switchSection(section);
+            if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        });
+    });
+
+    function switchSection(name) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const t = document.getElementById(name + 'Section');
+        if (t) t.classList.add('active');
+        const titles = { dashboard:'Dashboard', notas:'Notas Fiscais', das:'DAS / Impostos', financeiro:'Financeiro', clientes:'Clientes', relatorios:'Relatórios', declaracao:'Declaração Anual', certificado:'Certificado Digital' };
+        document.getElementById('pageTitle').textContent = titles[name] || name;
+        // Atualiza a nav ativa via data-section
+        document.querySelectorAll('.sidebar-nav a').forEach(l => {
+            l.classList.toggle('active', l.dataset.section === name);
+        });
+        if (name === 'relatorios') renderRelatorios();
+        if (name === 'financeiro') renderFinanceiro();
+        if (name === 'declaracao') renderDeclaracao();
+        if (name === 'notas') renderNotas();
+        if (name === 'clientes') renderClientes();
+        if (name === 'das') renderDAS();
+        if (name === 'dashboard') renderDashboard();
+    }
+
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // ===================== MODAIS =====================
+    function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
+    function abrirModal(id) { document.getElementById(id).classList.add('active'); }
+
+    function openNovaNotaModal() {
+        popularSelectClientes();
+        document.getElementById('notaCliente').value = '';
+        document.getElementById('notaClienteDoc').value = '';
+        document.getElementById('notaServico').value = '';
+        document.getElementById('notaValor').value = '';
+        document.getElementById('notaData').value = hoje();
+        abrirModal('modalNovaNota');
+    }
+
+    function abrirModalCliente() {
+        document.getElementById('clienteNome').value = '';
+        document.getElementById('clienteDoc').value = '';
+        document.getElementById('clienteTel').value = '';
+        document.getElementById('clienteEmail').value = '';
+        document.getElementById('clienteEnd').value = '';
+        abrirModal('modalNovoCliente');
+    }
+
+    function abrirModalDespesa() {
+        document.getElementById('despDescricao').value = '';
+        document.getElementById('despValor').value = '';
+        document.getElementById('despData').value = hoje();
+        abrirModal('modalDespesa');
+    }
+
+    window.onclick = function(e) {
+        if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
+    };
+
+    // ===================== CLIENTES =====================
+    function popularSelectClientes() {
+        const sel = document.getElementById('notaCliente');
+        sel.innerHTML = '<option value="">Selecione um cliente</option>';
+        clientes.forEach(c => {
+            sel.innerHTML += `<option value="${c.id}">${c.nome} — ${c.doc}</option>`;
+        });
+    }
+
+    document.getElementById('notaCliente').addEventListener('change', function() {
+        const c = clientes.find(x => x.id == this.value);
+        document.getElementById('notaClienteDoc').value = c ? c.doc : '';
+    });
+
+    function cadastrarCliente() {
+        const nome = document.getElementById('clienteNome').value.trim();
+        const doc = document.getElementById('clienteDoc').value.trim();
+        const tel = document.getElementById('clienteTel').value.trim();
+        const email = document.getElementById('clienteEmail').value.trim();
+        const end = document.getElementById('clienteEnd').value.trim();
+        if (!nome || !doc || !tel || !email) { mostrarToast('Preencha todos os campos obrigatórios.', true); return; }
+        const novo = { id: Date.now(), nome, doc, tel, email, end, cadastro: hoje() };
+        clientes.push(novo);
+        STORE.set('clientes', clientes);
+        fecharModal('modalNovoCliente');
+        renderClientes();
+        atualizarStats();
+        mostrarToast(`✅ Cliente "${nome}" cadastrado com sucesso!`);
+    }
+
+    function editarCliente(id) {
+        const c = clientes.find(x => x.id == id);
+        if (!c) return;
+        document.getElementById('editClienteId').value = c.id;
+        document.getElementById('editClienteNome').value = c.nome;
+        document.getElementById('editClienteDoc').value = c.doc;
+        document.getElementById('editClienteTel').value = c.tel;
+        document.getElementById('editClienteEmail').value = c.email;
+        document.getElementById('editClienteEnd').value = c.end || '';
+        abrirModal('modalEditarCliente');
+    }
+
+    function salvarEdicaoCliente() {
+        const id = parseInt(document.getElementById('editClienteId').value);
+        const idx = clientes.findIndex(x => x.id == id);
+        if (idx === -1) return;
+        clientes[idx].nome = document.getElementById('editClienteNome').value.trim();
+        clientes[idx].doc = document.getElementById('editClienteDoc').value.trim();
+        clientes[idx].tel = document.getElementById('editClienteTel').value.trim();
+        clientes[idx].email = document.getElementById('editClienteEmail').value.trim();
+        clientes[idx].end = document.getElementById('editClienteEnd').value.trim();
+        STORE.set('clientes', clientes);
+        fecharModal('modalEditarCliente');
+        renderClientes();
+        mostrarToast('Cliente atualizado com sucesso!');
+    }
+
+    function excluirCliente(id) {
+        if (!confirm('Tem certeza que deseja excluir este cliente?')) return;
+        clientes = clientes.filter(x => x.id != id);
+        STORE.set('clientes', clientes);
+        renderClientes();
+        atualizarStats();
+        mostrarToast('Cliente removido.', false);
+    }
+
+    function renderClientes() {
+        const q = (document.getElementById('searchClientes')?.value || '').toLowerCase();
+        const tbody = document.getElementById('clientesTableBody');
+        const lista = clientes.filter(c =>
+            c.nome.toLowerCase().includes(q) ||
+            c.doc.toLowerCase().includes(q) ||
+            (c.email || '').toLowerCase().includes(q)
+        );
+        if (lista.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users"></i><p>${q ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado ainda. Clique em "Novo Cliente" para começar.'}</p></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = lista.map(c => `
+            <tr>
+                <td><strong>${c.nome}</strong></td>
+                <td>${c.doc}</td>
+                <td>${c.tel}</td>
+                <td>${c.email}</td>
+                <td>${fmtData(c.cadastro)}</td>
+                <td style="display:flex;gap:6px;">
+                    <button class="btn btn-outline btn-sm" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm" style="background:rgba(225,112,85,0.2);color:var(--danger);border:1px solid var(--danger)" onclick="excluirCliente(${c.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ===================== NOTAS FISCAIS =====================
+    function emitirNota() {
+        const clienteId = document.getElementById('notaCliente').value;
+        const servico = document.getElementById('notaServico').value.trim();
+        const valor = parseFloat(document.getElementById('notaValor').value);
+        const data = document.getElementById('notaData').value;
+        if (!clienteId || !servico || !valor || !data) { mostrarToast('Preencha todos os campos.', true); return; }
+        const cliente = clientes.find(c => c.id == clienteId);
+        if (!cliente) { mostrarToast('Cliente não encontrado.', true); return; }
+        const nova = { id: Date.now(), numero: notaCounter++, clienteId: cliente.id, clienteNome: cliente.nome, clienteDoc: cliente.doc, servico, valor, data };
+        STORE.setObj('notaCounter', notaCounter);
+        notas.push(nova);
+        STORE.set('notas', notas);
+        // Adiciona ao fluxo financeiro como receita
+        despesas.push({ id: Date.now()+1, descricao: `NFS-e #${nova.numero} — ${cliente.nome}`, valor, data, tipo: 'receita' });
+        STORE.set('despesas', despesas);
+        fecharModal('modalNovaNota');
+        renderNotas();
+        renderDashboard();
+        atualizarStats();
+        mostrarToast(`✅ NFS-e #${nova.numero} emitida com sucesso!`);
+    }
+
+    function excluirNota(id) {
+        if (!confirm('Excluir esta nota fiscal?')) return;
+        notas = notas.filter(n => n.id != id);
+        STORE.set('notas', notas);
+        renderNotas();
+        renderDashboard();
+        atualizarStats();
+        mostrarToast('Nota excluída.');
+    }
+
+    function renderNotas() {
+        const q = (document.getElementById('searchNotas')?.value || '').toLowerCase();
+        const tbody = document.getElementById('notasTableBody');
+        const lista = [...notas].reverse().filter(n =>
+            n.clienteNome.toLowerCase().includes(q) ||
+            n.servico.toLowerCase().includes(q)
+        );
+        if (lista.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-file-invoice"></i><p>${q ? 'Nenhuma nota encontrada.' : 'Nenhuma nota fiscal emitida ainda. Clique em "Nova NFS-e" para emitir.'}</p></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = lista.map(n => `
+            <tr>
+                <td><strong>#${n.numero}</strong></td>
+                <td>${n.clienteNome}</td>
+                <td>${n.clienteDoc || '—'}</td>
+                <td>${n.servico}</td>
+                <td>${fmtMoeda(n.valor)}</td>
+                <td>${fmtData(n.data)}</td>
+                <td style="display:flex;gap:6px;">
+                    <button class="btn btn-outline btn-sm" onclick="mostrarToast('PDF gerado para NFS-e #${n.numero}!')"><i class="fas fa-download"></i> PDF</button>
+                    <button class="btn btn-sm" style="background:rgba(225,112,85,0.2);color:var(--danger);border:1px solid var(--danger)" onclick="excluirNota(${n.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ===================== DAS =====================
+    function gerarNovoDAS() {
+        const now = new Date();
+        const mesNomes = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+        const mesRef = mesNomes[now.getMonth()] + '/' + now.getFullYear();
+        const venc = `20/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+        const novo = { id: Date.now(), mes: mesRef, valor: 71.60, vencimento: venc, status: 'Pendente' };
+        dasGuias.unshift(novo);
+        STORE.set('das', dasGuias);
+        renderDAS();
+        mostrarToast(`DAS de ${mesRef} gerado com sucesso! Vencimento: ${venc}`);
+    }
+
+    function alterarStatusDAS(id, status) {
+        const g = dasGuias.find(d => d.id == id);
+        if (g) { g.status = status; STORE.set('das', dasGuias); renderDAS(); mostrarToast(`Status atualizado para "${status}".`); }
+    }
+
+    function excluirDAS(id) {
+        if (!confirm('Excluir esta guia?')) return;
+        dasGuias = dasGuias.filter(d => d.id != id);
+        STORE.set('das', dasGuias);
+        renderDAS();
+    }
+
+    function renderDAS() {
+        const tbody = document.getElementById('dasTableBody');
+        if (dasGuias.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-barcode"></i><p>Nenhuma guia DAS gerada.</p></div></td></tr>`;
+            return;
+        }
+        tbody.innerHTML = dasGuias.map(d => {
+            const stClass = d.status === 'Pago' ? 'status-paid' : d.status === 'Vencido' ? 'status-overdue' : 'status-pending';
+            return `<tr>
+                <td>${d.mes}</td>
+                <td>${fmtMoeda(d.valor)}</td>
+                <td>${d.vencimento}</td>
+                <td><span class="status-badge ${stClass}">${d.status}</span></td>
+                <td style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <button class="btn btn-outline btn-sm" onclick="mostrarToast('PDF da guia DAS gerado!')"><i class="fas fa-download"></i> PDF</button>
+                    ${d.status !== 'Pago' ? `<button class="btn btn-sm" style="background:rgba(0,184,148,0.2);color:var(--success);border:1px solid var(--success)" onclick="alterarStatusDAS(${d.id},'Pago')"><i class="fas fa-check"></i> Pago</button>` : ''}
+                    <button class="btn btn-sm" style="background:rgba(225,112,85,0.2);color:var(--danger);border:1px solid var(--danger)" onclick="excluirDAS(${d.id})"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ===================== FINANCEIRO =====================
+    function salvarDespesa() {
+        const desc = document.getElementById('despDescricao').value.trim();
+        const valor = parseFloat(document.getElementById('despValor').value);
+        const data = document.getElementById('despData').value;
+        if (!desc || !valor || !data) { mostrarToast('Preencha todos os campos.', true); return; }
+        despesas.push({ id: Date.now(), descricao: desc, valor, data, tipo: 'despesa' });
+        STORE.set('despesas', despesas);
+        fecharModal('modalDespesa');
+        renderFinanceiro();
+        mostrarToast('Despesa lançada com sucesso!');
+    }
+
+    function excluirLancamento(id) {
+        despesas = despesas.filter(d => d.id != id);
+        STORE.set('despesas', despesas);
+        renderFinanceiro();
+        mostrarToast('Lançamento removido.');
+    }
+
+    function renderFinanceiro() {
+        const now = new Date();
+        const mes = now.getMonth();
+        const ano = now.getFullYear();
+        const lancMes = despesas.filter(d => {
+            if (!d.data) return false;
+            const dd = new Date(d.data);
+            return dd.getMonth() === mes && dd.getFullYear() === ano;
+        });
+        const receitas = lancMes.filter(d => d.tipo === 'receita').reduce((a, b) => a + b.valor, 0);
+        const despesasMes = lancMes.filter(d => d.tipo === 'despesa').reduce((a, b) => a + b.valor, 0);
+        const lucro = receitas - despesasMes;
+        const margem = receitas > 0 ? ((lucro / receitas) * 100).toFixed(1) : '0.0';
+        document.getElementById('finStats').innerHTML = `
+            <div class="stat-card"><div class="icon icon-green"><i class="fas fa-arrow-up"></i></div><h3>Receitas (Mês)</h3><div class="value">${fmtMoeda(receitas)}</div></div>
+            <div class="stat-card"><div class="icon icon-orange"><i class="fas fa-arrow-down"></i></div><h3>Despesas (Mês)</h3><div class="value">${fmtMoeda(despesasMes)}</div></div>
+            <div class="stat-card"><div class="icon icon-purple"><i class="fas fa-chart-pie"></i></div><h3>Lucro Líquido</h3><div class="value">${fmtMoeda(lucro)}</div></div>
+            <div class="stat-card"><div class="icon icon-blue"><i class="fas fa-percentage"></i></div><h3>Margem</h3><div class="value">${margem}%</div></div>
+        `;
+        const todos = [...despesas].reverse();
+        const fluxoBody = document.getElementById('fluxoBody');
+        if (todos.length === 0) {
+            fluxoBody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-receipt"></i><p>Nenhum lançamento ainda.</p></div></td></tr>`;
+            return;
+        }
+        fluxoBody.innerHTML = todos.map(d => `
+            <tr>
+                <td>${fmtData(d.data)}</td>
+                <td>${d.descricao}</td>
+                <td style="color:${d.tipo==='receita'?'var(--success)':'var(--danger)'};">${d.tipo === 'receita' ? 'Receita' : 'Despesa'}</td>
+                <td style="color:${d.tipo==='receita'?'var(--success)':'var(--danger)'};">${d.tipo==='receita'?'+':'-'}${fmtMoeda(d.valor)}</td>
+                <td><button class="btn btn-sm" style="background:rgba(225,112,85,0.2);color:var(--danger);border:1px solid var(--danger)" onclick="excluirLancamento(${d.id})"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    // ===================== RELATÓRIOS =====================
+    function renderRelatorios() {
+        const totalFat = notas.reduce((a, b) => a + b.valor, 0);
+        const totalDespesas = despesas.filter(d=>d.tipo==='despesa').reduce((a,b)=>a+b.valor,0);
+        const lucroTotal = totalFat - totalDespesas;
+        const margem = totalFat > 0 ? ((lucroTotal / totalFat)*100).toFixed(1) : '0.0';
+        document.getElementById('relatorioCards').innerHTML = `
+            <div class="stat-card"><div class="icon icon-purple"><i class="fas fa-file-invoice"></i></div><h3>Total de Notas</h3><div class="value">${notas.length}</div><div class="subtitle">Todas as notas emitidas</div></div>
+            <div class="stat-card"><div class="icon icon-green"><i class="fas fa-money-bill-wave"></i></div><h3>Faturamento Total</h3><div class="value">${fmtMoeda(totalFat)}</div><div class="subtitle">Soma de todas as NFS-e</div></div>
+            <div class="stat-card"><div class="icon icon-blue"><i class="fas fa-users"></i></div><h3>Total de Clientes</h3><div class="value">${clientes.length}</div><div class="subtitle">Cadastrados na plataforma</div></div>
+            <div class="stat-card"><div class="icon icon-orange"><i class="fas fa-chart-pie"></i></div><h3>Margem Líquida</h3><div class="value">${margem}%</div><div class="subtitle">Após despesas</div></div>
+        `;
+        // Notas por mês
+        const porMes = {};
+        notas.forEach(n => {
+            const m = getMesAno(n.data);
+            if (!porMes[m]) porMes[m] = { qtd: 0, total: 0 };
+            porMes[m].qtd++;
+            porMes[m].total += n.valor;
+        });
+        const relMes = document.getElementById('relMesBody');
+        const meses = Object.keys(porMes);
+        relMes.innerHTML = meses.length === 0
+            ? `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhuma nota emitida.</td></tr>`
+            : meses.map(m => `<tr><td>${m}</td><td>${porMes[m].qtd}</td><td>${fmtMoeda(porMes[m].total)}</td></tr>`).join('');
+        // Top clientes
+        const porCliente = {};
+        notas.forEach(n => {
+            if (!porCliente[n.clienteNome]) porCliente[n.clienteNome] = { qtd: 0, total: 0 };
+            porCliente[n.clienteNome].qtd++;
+            porCliente[n.clienteNome].total += n.valor;
+        });
+        const sorted = Object.keys(porCliente).sort((a,b) => porCliente[b].total - porCliente[a].total);
+        const relCli = document.getElementById('relClientesBody');
+        relCli.innerHTML = sorted.length === 0
+            ? `<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:20px;">Nenhum cliente com notas.</td></tr>`
+            : sorted.map(c => `<tr><td>${c}</td><td>${porCliente[c].qtd}</td><td>${fmtMoeda(porCliente[c].total)}</td></tr>`).join('');
+    }
+
+    // ===================== DECLARAÇÃO =====================
+    function renderDeclaracao() {
+        const total = notas.reduce((a,b)=>a+b.valor,0);
+        document.getElementById('declFaturamento').textContent = fmtMoeda(total);
+        document.getElementById('declNotas').textContent = notas.length;
+    }
+
+    // ===================== DASHBOARD =====================
+    function renderDashboard() {
+        const tbody = document.getElementById('dashNotasBody');
+        const ultimas = [...notas].reverse().slice(0, 5);
+        if (ultimas.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-file-invoice"></i><p>Nenhuma nota emitida ainda.</p></div></td></tr>`;
+        } else {
+            tbody.innerHTML = ultimas.map(n => `
+                <tr>
+                    <td>#${n.numero}</td>
+                    <td>${n.clienteNome}</td>
+                    <td>${n.servico}</td>
+                    <td>${fmtMoeda(n.valor)}</td>
+                    <td>${fmtData(n.data)}</td>
+                    <td><span class="status-badge status-paid">Emitida</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function atualizarStats() {
+        // Notas do mês atual
+        const now = new Date();
+        const notasMes = notas.filter(n => {
+            if (!n.data) return false;
+            const d = new Date(n.data);
+            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        });
+        const fatMes = notasMes.reduce((a,b)=>a+b.valor,0);
+        document.getElementById('statNotasMes').textContent = notasMes.length;
+        document.getElementById('statFaturamento').textContent = fmtMoeda(fatMes);
+        document.getElementById('statClientes').textContent = clientes.length;
+        // DAS pendente
+        const pending = dasGuias.find(d => d.status === 'Pendente');
+        if (pending) {
+            document.getElementById('statDAS').textContent = fmtMoeda(pending.valor);
+            document.getElementById('statDASVenc').textContent = 'Vencimento: ' + pending.vencimento;
+        }
+        // Notificações
+        const nNotifs = (pending ? 1 : 0) + (notas.length > 0 ? 1 : 0);
+        document.getElementById('notifBadge').textContent = nNotifs + ' nova' + (nNotifs !== 1 ? 's' : '');
+    }
+
+    // ===================== INIT =====================
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('notaData').value = hoje();
+        renderDashboard();
+        atualizarStats();
+        renderDAS();
+    });
+    </script>
+</body>
+</html>

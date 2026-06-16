@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosmicMEI - Simplificando a Vida do MEI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5c4cd9;
+            --secondary: #00b894;
+            --dark: #2d3436;
+            --darker: #1a1e20;
+            --light: #f8fafc;
+            --light-alt: #ffffff;
+            --text-muted: #6b7280;
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background-color: var(--light); color: var(--dark); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 25px; }
+        a { text-decoration: none; color: var(--primary); }
+        a:hover { color: var(--primary-dark); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 32px; border-radius: 50px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; border: none; text-align: center; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 8px 20px rgba(108, 92, 231, 0.25); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(108, 92, 231, 0.35); }
+        .btn-secondary { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-secondary:hover { background-color: var(--primary); color: white; transform: translateY(-2px); }
+        header { background: white; padding: 15px 0; box-shadow: 0 2px 15px rgba(0,0,0,0.06); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .logo i { font-size: 30px; color: var(--primary); }
+        .nav-links { display: flex; list-style: none; gap: 30px; }
+        .nav-links a { color: var(--dark); font-weight: 500; transition: color 0.3s; padding-bottom: 5px; border-bottom: 2px solid transparent; }
+        .nav-links a:hover { color: var(--primary); border-bottom-color: var(--primary); }
+        .hero { padding: 180px 0 100px; text-align: center; background: linear-gradient(135deg, #f8fafc 0%, #e8eaf6 100%); position: relative; overflow: hidden; }
+        .hero h1 { font-family: var(--font-heading); font-size: 52px; margin-bottom: 20px; color: var(--dark); line-height: 1.2; }
+        .hero p { font-size: 20px; max-width: 700px; margin: 0 auto 40px; color: var(--text-muted); }
+        .hero-btns { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .features { padding: 100px 0; }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title h2 { font-family: var(--font-heading); font-size: 40px; color: var(--dark); margin-bottom: 15px; position: relative; display: inline-block; }
+        .section-title h2::after { content: ''; position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%); width: 60px; height: 4px; background: var(--primary); border-radius: 5px; }
+        .section-title p { font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .feature-card { background: white; padding: 40px 30px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); transition: transform 0.3s, box-shadow 0.3s; text-align: center; }
+        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .feature-icon { width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 30px; }
+        .feature-card h3 { font-family: var(--font-heading); margin-bottom: 10px; color: var(--dark); }
+        .feature-card p { color: var(--text-muted); font-size: 15px; }
+        .pricing { padding: 100px 0; background: white; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .pricing-card { background: var(--light); border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.06); transition: transform 0.3s; border: 1px solid #e2e8f0; position: relative; }
+        .pricing-card:hover { transform: translateY(-8px); }
+        .pricing-card.popular { border: 2px solid var(--primary); }
+        .popular-badge { position: absolute; top: -12px; right: 20px; background: var(--primary); color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .plan-name { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: var(--dark); }
+        .plan-price { font-size: 42px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+        .plan-price span { font-size: 16px; font-weight: 400; color: var(--text-muted); }
+        .plan-features { list-style: none; text-align: left; margin-bottom: 30px; }
+        .plan-features li { padding: 8px 0; color: var(--text-muted); }
+        .plan-features li i { color: var(--secondary); margin-right: 8px; }
+        .faq-section { padding: 100px 0; }
+        .faq-grid { max-width: 800px; margin: 0 auto; }
+        .faq-item { background: white; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .faq-question { padding: 20px 25px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .faq-answer { padding: 0 25px; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; color: var(--text-muted); }
+        .faq-item.active .faq-answer { max-height: 200px; padding-bottom: 20px; }
+        footer { background: var(--darker); color: white; padding: 60px 0 30px; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
+        .footer-column h3 { color: var(--secondary); margin-bottom: 20px; }
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 10px; }
+        .footer-column ul li a { color: #a0aec0; transition: color 0.3s; }
+        .footer-column ul li a:hover { color: white; }
+        .copyright { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); color: #a0aec0; font-size: 14px; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero p { font-size: 17px; }
+            .nav-links { display: none; }
+            .hero-btns { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <i class="fas fa-rocket"></i> CosmicMEI
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#features">Funcionalidades</a></li>
+                    <li><a href="#pricing">Planos</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="dashboard.html">Entrar</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="container">
+                <h1>Simplifique a Gestão do Seu MEI</h1>
+                <p>Emita notas fiscais, calcule impostos, gerencie clientes e muito mais. Tudo em uma plataforma intuitiva feita para o microempreendedor brasileiro.</p>
+                <div class="hero-btns">
+                    <a href="dashboard.html" class="btn btn-primary"><i class="fas fa-user-plus" style="margin-right: 8px;"></i> Criar Conta Gratuita</a>
+                    <a href="#pricing" class="btn btn-secondary"><i class="fas fa-tag" style="margin-right: 8px;"></i> Ver Planos</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Funcionalidades Completas</h2>
+                    <p>Tudo que você precisa para gerenciar seu MEI em um só lugar.</p>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-file-invoice"></i></div>
+                        <h3>Emissão de Notas Fiscais</h3>
+                        <p>Emita NFS-e em menos de 2 minutos. Compatível com todos os municípios brasileiros.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                        <h3>Cálculo de DAS</h3>
+                        <p>Cálculo automático do DAS mensal com geração de guias em PDF e lembretes de vencimento.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                        <h3>Declaração Anual</h3>
+                        <p>Preenchimento automático da DASN-SIMEI baseado nas suas notas fiscais emitidas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Gestão Financeira</h3>
+                        <p>Fluxo de caixa simplificado, relatórios de lucratividade e projeções com IA.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-users"></i></div>
+                        <h3>Agenda e Clientes</h3>
+                        <p>CRM completo com histórico de serviços, agendamento e integração com WhatsApp.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Certificado Digital</h3>
+                        <p>Emissão de certificado digital MEI gratuito com validade jurídica nacional.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Planos e Preços</h2>
+                    <p>Escolha o plano ideal para o seu negócio.</p>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="plan-name">Start</div>
+                        <div class="plan-price">R$ 0<span>/mês</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Até 3 notas fiscais/mês</li>
+                            <li><i class="fas fa-check"></i> Cálculo de DAS manual</li>
+                            <li><i class="fas fa-check"></i> Agenda básica (50 clientes)</li>
+                            <li><i class="fas fa-check"></i> Suporte por e-mail (48h)</li>
+                        </ul>
+                        <a href="dashboard.html" class="btn btn-secondary">Começar Grátis</a>
+                    </div>
+                    <div class="pricing-card popular">
+                        <span class="popular-badge">Mais Popular</span>
+                        <div class="plan-name">Pro</div>
+                        <div class="plan-price">R$ 29,90<span>/mês</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Notas fiscais ILIMITADAS</li>
+                            <li><i class="fas fa-check"></i> Cálculo automático de DAS</li>
+                            <li><i class="fas fa-check"></i> Declaração anual automática</li>
+                            <li><i class="fas fa-check"></i> Gestão financeira completa</li>
+                            <li><i class="fas fa-check"></i> CRM com até 500 clientes</li>
+                            <li><i class="fas fa-check"></i> Suporte prioritário (4h)</li>
+                        </ul>
+                        <a href="dashboard.html" class="btn btn-primary">Assinar Pro</a>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="plan-name">Enterprise</div>
+                        <div class="plan-price">R$ 49,90<span>/mês</span></div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Tudo do Pro</li>
+                            <li><i class="fas fa-check"></i> Múltiplos CNPJs (até 3)</li>
+                            <li><i class="fas fa-check"></i> Clientes ILIMITADOS</li>
+                            <li><i class="fas fa-check"></i> Integração com contador</li>
+                            <li><i class="fas fa-check"></i> Suporte VIP 24/7</li>
+                        </ul>
+                        <a href="dashboard.html" class="btn btn-secondary">Assinar Enterprise</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section" id="faq">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Perguntas Frequentes</h2>
+                </div>
+                <div class="faq-grid">
+                    <div class="faq-item active">
+                        <div class="faq-question">Como emitir minha primeira nota fiscal? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer"><p>Menu "Notas Fiscais" > "Nova NFS-e" > Selecione cliente > Descreva serviço > Informe valor > "Emitir". Pronto!</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">O que acontece se atrasar o DAS? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer"><p>Multa de 0,33% ao dia (máx. 20%) + juros Selic. Mais de 90 dias pode levar à Dívida Ativa.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Preciso de contador? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer"><p>Não é obrigatório, mas recomendamos. A CosmicMEI oferece consultoria nos planos Pro e Enterprise.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="logo" style="color: white;"><i class="fas fa-rocket"></i> CosmicMEI</div>
+                    <p style="color: #a0aec0;">Simplificando a vida do microempreendedor brasileiro.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Plataforma</h3>
+                    <ul>
+                        <li><a href="#features">Funcionalidades</a></li>
+                        <li><a href="#pricing">Planos</a></li>
+                        <li><a href="#">App Mobile</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Suporte</h3>
+                    <ul>
+                        <li><a href="#">Central de Ajuda</a></li>
+                        <li><a href="#">Contato</a></li>
+                        <li><a href="#">WhatsApp</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="indepolit.html">Política de Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 CosmicMEI. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.querySelectorAll('.faq-question').forEach(item => {
+            item.addEventListener('click', () => {
+                item.parentElement.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
